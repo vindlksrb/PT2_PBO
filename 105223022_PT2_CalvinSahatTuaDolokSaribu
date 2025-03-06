@@ -1,0 +1,102 @@
+import java.util.Random;
+import java.util.Scanner;
+
+public class App {
+    private static final int HARI_DALAM_SEBULAN = 30;
+    private static final int BONUS_MIN = 100_000;
+    private static final int BONUS_MAX = 1_000_000;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+        
+        String nama = inputNama(scanner);
+        double usia = inputUsia(scanner);
+        int uang = inputUang(scanner);
+        double pengeluaranHarian = inputPengeluaran(scanner);
+        
+        double sisaUang30Hari = uang - (pengeluaranHarian * HARI_DALAM_SEBULAN);
+        double bulanBertahan = uang / (pengeluaranHarian * HARI_DALAM_SEBULAN);
+        String statusKeuangan = tentukanStatusKeuangan(bulanBertahan);
+    
+        double hutang = inputHutang(scanner);
+        double nilaiAbsolutHutang = Math.abs(hutang);
+        double pengeluaranDibulatkan = Math.ceil(pengeluaranHarian);
+        int bonusTakTerduga = BONUS_MIN + random.nextInt(BONUS_MAX - BONUS_MIN + 1); 
+        
+        tampilkanLaporanKeuangan(nama, usia, uang, pengeluaranHarian, sisaUang30Hari, bulanBertahan, statusKeuangan, nilaiAbsolutHutang, pengeluaranDibulatkan, bonusTakTerduga);
+        
+        double totalUangSetelah = sisaUang30Hari + bonusTakTerduga;
+        System.out.println("Total uang yang anda miliki setelah pengeluaran dan bonus: Rp" + (int) totalUangSetelah);
+        
+        scanner.close();
+    }
+
+    private static String inputNama(Scanner scanner) {
+        System.out.print("Masukkan nama: ");
+        return scanner.nextLine();
+    }
+
+    private static double inputUsia(Scanner scanner) {
+        System.out.print("Masukkan usia: ");
+        while (!scanner.hasNextDouble()) {
+            System.out.println("Input tidak valid. Masukkan angka lagi untuk usia.");
+            scanner.next(); 
+        }
+        double usia = scanner.nextDouble();
+        return usia < 0 ? 0 : usia; 
+    }
+
+    private static int inputUang(Scanner scanner) {
+        System.out.print("Masukkan jumlah uang yang anda miliki: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println("Input tidak valid. Silakan masukkan angka uang anda lagi.");
+            scanner.next(); 
+        }
+        int uang = scanner.nextInt();
+        return uang < 0 ? 0 : uang;
+    }
+
+    private static double inputPengeluaran(Scanner scanner) {
+        System.out.print("Masukkan rata-rata pengeluaran harian anda: ");
+        while (!scanner.hasNextDouble()) {
+            System.out.println("Input tidak valid. Silakan masukkan angka pengeluaran anda lagi.");
+            scanner.next(); // Clear invalid input
+        }
+        double pengeluaranHarian = scanner.nextDouble();
+        return pengeluaranHarian < 0 ? 0 : pengeluaranHarian; 
+    }
+
+    private static double inputHutang(Scanner scanner) {
+        System.out.print("Jumlah hutang anda: ");
+        while (!scanner.hasNextDouble()) {
+            System.out.println("Input tidak valid. Silakan masukkan angka hutang anda lagi.");
+            scanner.next(); 
+        }
+        return scanner.nextDouble();
+    }
+
+    private static String tentukanStatusKeuangan(double bulanBertahan) {
+        if (bulanBertahan < 1) {
+            return "PERINGATAN: Keuangan Anda Tidak stabil!!!";
+        } else if (bulanBertahan > 6) {
+            return "Keuangan Anda dalam kondisi stabil.";
+        } else {
+            return "Keuangan Anda cukup stabil.";
+        }
+    }
+
+    private static void tampilkanLaporanKeuangan(String nama, double usia, int uang, double pengeluaranHarian, double sisaUang30Hari, double bulanBertahan, String statusKeuangan, double nilaiAbsolutHutang, double pengeluaranDibulatkan, int bonusTakTerduga) {
+        System.out.println("\n=== LAPORAN KEUANGAN PRIBADI ===");
+        System.out.println("Nama: " + nama);
+        System.out.println("Usia: " + (int) usia + " tahun");
+        System.out.println("Uang yang dimiliki: Rp" + uang);
+        System.out.println("Pengeluaran harian rata-rata: Rp" + pengeluaranHarian);
+        System.out.println("Sisa uang dalam 30 hari: Rp" + sisaUang30Hari);
+        System.out.println("Estimasi bulan bertahan: " + String.format("%.1f", bulanBertahan) + " bulan");
+        System.out.println("Status Keuangan: " + statusKeuangan);
+        System.out.println("\nNilai absolut dari hutang: Rp" + nilaiAbsolutHutang);
+        System.out.println("Pengeluaran harian setelah pembulatan: Rp" + (int) pengeluaranDibulatkan);
+        System.out.println("Bonus tak terduga: Rp" + bonusTakTerduga);
+    }
+}
